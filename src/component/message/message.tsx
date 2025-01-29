@@ -1,12 +1,22 @@
+import { Card, List } from "antd";
 import { IMessage } from "../../types/message";
-import { cn } from "@bem-react/classname";
-
-const CN = cn("message-component")
 
 type Props = {
   message: IMessage;
 };
 
 export const Message = ({ message }: Props) => {
-  return <div className={CN()}>{message.text}</div>;
+  return (
+    <List.Item
+      style={{
+        display: "flex",
+        justifyContent: message.senderId === 0 ? "end" : "start",
+      }}
+    >
+      <Card size="small" style={{ maxWidth: 300, minWidth: 50 }}>
+        <p>{message.text}</p>
+        <p>{message.date}</p>
+      </Card>
+    </List.Item>
+  );
 };

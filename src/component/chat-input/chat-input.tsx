@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { cn } from "@bem-react/classname";
-const CN = cn("input-component");
+import { Button, Input, Space } from "antd";
+import { SendOutlined } from "@ant-design/icons";
 
 type Props = {
   onTextSend: (text: string) => void;
 };
 
-export const Input = (props: Props) => {
+export const ChatInput = (props: Props) => {
   const [value, setValue] = useState("");
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -20,7 +20,7 @@ export const Input = (props: Props) => {
     }
   };
 
-  const handleKeyPress: React.KeyboardEventHandler<HTMLInputElement> = (
+  const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (
     event
   ) => {
     if (event.key === "Enter") {
@@ -29,16 +29,16 @@ export const Input = (props: Props) => {
   };
 
   return (
-    <div className={CN()}>
-      <input
-        onChange={handleInputChange}
+    <Space.Compact style={{ width: "100%" }}>
+      <Input
+        placeholder="Type your text"
         value={value}
-        className={CN("input")}
-        onKeyDown={handleKeyPress}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
       />
-      <button onClick={handleButtonClick} className={CN("button")}>
-        send
-      </button>
-    </div>
+      <Button type="primary" onClick={handleButtonClick}>
+        <SendOutlined />
+      </Button>
+    </Space.Compact>
   );
 };
