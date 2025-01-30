@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Chat } from "../../component/chat/chat";
 import { ChatInput } from "../../component/chat-input/chat-input";
-import { IMessages } from "../../types/message";
+import { IMessage, IMessages } from "../../types/message";
 import { Layout } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { Content, Footer, Header } from "antd/es/layout/layout";
@@ -10,8 +10,9 @@ import { ChatList } from "../../component/chat-list/chat-list";
 import { RegisterModal } from "../../component/register-modal/register-model";
 import { ErrorList } from "../../component/error-list/error-list";
 import { useAppSelector } from "../../store/hooks";
-import { useLazyGetMessageQuery } from "../../store/services/message";
+import { useLazyGetAllMessageQuery } from "../../store/services/message";
 import { io } from "socket.io-client";
+import { v4 } from "uuid";
 
 const headerStyle: React.CSSProperties = {
   textAlign: "center",
@@ -50,91 +51,59 @@ const layoutStyle = {
   height: "100vh",
 };
 
-// import io from "socket.io-client";
-
-let socket = new WebSocket("ws://localhost:8080/ws");
-// const socket = io("ws://127.0.0.1:8080/ws");
-
-// socket.on("disconnect", (reason) => {
-//   console.log("disconnect");
-
-//   if (reason === "io server disconnect") {
-//     // the disconnection was initiated by the server, you need to manually reconnect
-//     console.log(socket.active); // false
-//   }
-//   // else the socket will automatically try to reconnect
-//   console.log(socket.active); // true
-// });
-
-// socket.on("connect", () => {
-//   console.log("[open] Соединение установлено");
-//   console.log("Отправляем данные на сервер");
-//   socket.send("Меня зовут Джон");
-// });
-
-// socket.on("message", (mess) => {
-//   console.log("get: ", mess);
-// });
-
-socket.onopen = function (e) {
-  console.log("[open] Соединение установлено");
-  console.log("Отправляем данные на сервер");
-  socket.send("Меня зовут Джон");
-};
-
-socket.onmessage = function (event) {
-  console.log(`[message] Данные получены с сервера: ${event.data}`);
-};
-
-socket.onclose = function (event) {
-  if (event.wasClean) {
-    console.log(
-      `[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`
-    );
-  } else {
-    // например, сервер убил процесс или сеть недоступна
-    // обычно в этом случае event.code 1006
-    console.log("[close] Соединение прервано");
-  }
-};
-
-socket.onerror = function (error) {
-  console.log(`[error]`);
-};
-
+const socket = io.connect("http://localhost:4000");
 
 export const MainPage = () => {
+  const [currentChat, setCurrentChat] = useState<string>("");
   const [messages, setMessage] = useState<IMessages>([]);
 
   const login = useAppSelector((state) => state.user.login);
 
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-  //   const [getMessages, newMessages] = useLazyGetMessageQuery();
-
-  //   useEffect(() => {
-  //     console.log(newMessages);
-  //   }, [newMessages]);
+  const [getMessages, newMessages] = useLazyGetAllMessageQuery();
 
   useEffect(() => {
     if (login === "") setIsRegisterModalOpen(true);
-    // else startGetMessges();
   }, [login]);
 
-  //   const startGetMessges = async () => {
-  //     await getMessages();
-  //   };
+  useEffect(() => {
+    if (currentChat !== "") {
+      socket.emit("join_room", { chat_id: currentChat });
+      getMessages(currentChat);
+    }
+  }, [currentChat]);
+
+  useEffect(() => {
+    if (newMessages.data && newMessages.data.data) {
+      setMessage(newMessages.data.data);
+    }
+  }, [newMessages]);
+
+  useEffect(() => {
+    socket.on("receive_message", (data: IMessage) => {
+      console.log("receive_message", data);
+      setMessage((prev) => [...prev, data]);
+    });
+
+    return () => socket.off("receive_message");
+  }, [socket]);
+
+  //   useEffect(() => {
+  //     socket.emit("join_room", { name: "login", room: "room" });
+  //     socket.on("chatroom_users", (data) => {
+  //       console.log("chatroom_users:", data);
+  //     });
+  //     socket.on("receive_messsage", (data) => {
+  //       console.log("receive_messsage:", data);
+  //     });
+  //   }, [socket]);
 
   const handleMessageSend = (text: string) => {
-    setMessage((prev) => [
-      ...prev,
-      {
-        date: Date.now(),
-        id: messages.length + "",
-        recipientId: messages.length % 2,
-        senderId: messages.length % 2 === 0 ? 1 : 0,
-        text: text,
-      },
-    ]);
+    socket.emit("send_message", {
+      id_chat: currentChat,
+      user_sender: login,
+      message: text,
+    });
   };
 
   return (
@@ -145,7 +114,7 @@ export const MainPage = () => {
         setIsModalOpen={setIsRegisterModalOpen}
       />
       <Sider width="25%" style={siderStyle}>
-        <ChatList />
+        <ChatList currentChat={currentChat} handleChatChange={setCurrentChat} />
       </Sider>
       <Layout>
         <Header style={headerStyle}>Header</Header>

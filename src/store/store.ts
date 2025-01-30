@@ -6,6 +6,7 @@ import { userSlice } from "./slices/user";
 import { userApi } from "./services/user";
 import { errorSlice } from "./slices/error";
 import { messageApi } from "./services/message";
+import { chatApi } from "./services/chat";
 
 export const store = configureStore({
   reducer: {
@@ -15,13 +16,15 @@ export const store = configureStore({
 
     [pokemonApi.reducerPath]: pokemonApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
-    // [messageApi.reducerPath]: messageApi.reducer,
+    [chatApi.reducerPath]: chatApi.reducer,
+    [messageApi.reducerPath]: messageApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       pokemonApi.middleware,
       userApi.middleware,
-    //   messageApi.middleware
+      chatApi.middleware,
+      messageApi.middleware
     ),
 });
 

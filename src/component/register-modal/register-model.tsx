@@ -16,11 +16,14 @@ export const RegisterModal = ({ isModalOpen, setIsModalOpen }: Props) => {
   const [password, setPassword] = useState("");
 
   const handleOk = async () => {
-    if (login !== "" && password !== "")
-      sendUserRequest({
+    if (login !== "" && password !== "") {
+        console.log(login, password);
+        
+      await sendUserRequest({
         login: login,
         password: password,
       });
+    }
   };
 
   useEffect(() => {
