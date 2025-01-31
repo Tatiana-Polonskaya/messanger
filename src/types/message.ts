@@ -1,9 +1,9 @@
 export interface IMessage {
   id: string;
   text: string;
-  date: number;
-  senderId: number;
-  recipientId: number;
+  sender: string;
+  time: number;
+  chat_id: string;
 }
 
 export type IMessages = IMessage[];
