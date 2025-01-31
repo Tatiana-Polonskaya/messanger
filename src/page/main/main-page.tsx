@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Layout } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { ChatList } from "../../component/chat-list/chat-list";
-import { RegisterModal } from "../../component/register-modal/register-model";
+import { RegisterModal } from "../../component/register-modal/register-modal";
 import { ErrorList } from "../../component/error-list/error-list";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { io } from "socket.io-client";

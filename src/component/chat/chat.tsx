@@ -21,7 +21,7 @@ const headerStyle: React.CSSProperties = {
   paddingInline: 48,
   lineHeight: "64px",
   backgroundColor: "rgb(129, 166, 209)",
-//   borderLeft: "1px solid white",
+  //   borderLeft: "1px solid white",
 };
 
 const contentStyle: React.CSSProperties = {
@@ -48,6 +48,7 @@ const emptyContentStyle: React.CSSProperties = {
 
 const footerStyle: React.CSSProperties = {
   padding: 10,
+  background: "none",
   //   textAlign: "center",
 };
 
@@ -86,6 +87,7 @@ export const Chat = ({ socket, currentChat }: Props) => {
       text,
       sender: login,
       time: Date.now(),
+      chat_id: currentChat,
     };
 
     setMessage((prev) => [...prev, newMessage]);
@@ -118,7 +120,16 @@ export const Chat = ({ socket, currentChat }: Props) => {
         </>
       ) : (
         <Content style={emptyContentStyle}>
-          <Typography>Select a chat from your list or create one.</Typography>
+          <Typography
+            style={{
+              background: "rgba(0, 0, 0, 0.15)",
+              color: "white",
+              padding: 10,
+              borderRadius: 5,
+            }}
+          >
+            Select a chat from your list or create one.
+          </Typography>
         </Content>
       )}
     </Layout>

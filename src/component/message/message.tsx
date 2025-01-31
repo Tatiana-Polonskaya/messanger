@@ -1,4 +1,4 @@
-import { Card, List } from "antd";
+import { Card, Flex, List, Space, Typography } from "antd";
 import { IMessage } from "../../types/message";
 
 type Props = {
@@ -34,11 +34,14 @@ export const Message = ({ message, login }: Props) => {
         display: "flex",
         justifyContent: message.sender === login ? "end" : "start",
       }}
-      
     >
       <Card size="small" style={{ maxWidth: 300, minWidth: 50 }}>
-        <p>{message.text}</p>
-        <p>{covertTimestampToDatetime(message.time)}</p>
+        <Flex>
+          <Typography>{message.text}</Typography>
+          <Typography>
+            {covertTimestampToDatetime(message.time)}
+          </Typography>
+        </Flex>
       </Card>
     </List.Item>
   );

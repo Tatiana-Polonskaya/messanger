@@ -14,7 +14,7 @@ function App() {
               colorText: "black",
               //   colorPrimary: "rgb(86, 109, 136)",
               itemSelectedBg: "rgba(129, 166, 209, 0.26)",
-              itemBg:"",
+              itemBg: "",
               itemBorderRadius: 0,
               itemMarginInline: 0,
               itemMarginBlock: 0,

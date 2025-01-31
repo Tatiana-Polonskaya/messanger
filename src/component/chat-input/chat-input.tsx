@@ -39,7 +39,7 @@ export const ChatInput = (props: Props) => {
       <Button
         type="primary"
         onClick={handleButtonClick}
-        style={{ background: "rgb(129, 166, 209)" }}
+        
       >
         <SendOutlined />
       </Button>

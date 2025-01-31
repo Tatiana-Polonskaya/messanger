@@ -1,4 +1,4 @@
-import { Input, Modal, Space, Typography } from "antd";
+import { Button, Flex, Input, Modal, Space, Typography } from "antd";
 import { useState } from "react";
 import { useAppDispatch } from "../../store/hooks";
 import { addError } from "../../store/slices/error";
@@ -33,24 +33,42 @@ export const AddChatModal = ({
       );
     }
   };
-  
+
   return (
     <Modal
-      title="Сreating a new chat."
+      title={
+        <Typography.Title style={{ textAlign: "center" }} level={4}>
+          Сreating a new chat!
+        </Typography.Title>
+      }
       open={isModalOpen}
-      onOk={handleSaveFriendLogin}
-      onCancel={handleCloseModal}
       closable={false}
       centered
+      width={"350px"}
+      mask
+      footer={
+        <Flex gap={10}>
+          <Button onClick={handleCloseModal} style={{ flexGrow: 1 }}>
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSaveFriendLogin}
+            type="primary"
+            style={{ flexGrow: 1 }}
+          >
+            Create
+          </Button>
+        </Flex>
+      }
     >
-      <Space.Compact direction="vertical">
+      <Space direction="vertical" style={{ width: "100%", gap: 10 }}>
         <Typography.Text>Friend's login:</Typography.Text>
         <Input
-          placeholder="unique login"
+          placeholder="Type a login"
           value={friendLogin}
           onChange={(e) => setFriendLogin(e.currentTarget.value.trim())}
         />
-      </Space.Compact>
+      </Space>
     </Modal>
   );
 };

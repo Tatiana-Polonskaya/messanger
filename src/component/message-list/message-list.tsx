@@ -1,4 +1,4 @@
-import { List } from "antd";
+import { Flex, List, Typography } from "antd";
 import { IMessage, IMessages } from "../../types/message";
 import { Message } from "../message/message";
 import { useEffect, useRef } from "react";
@@ -31,7 +31,20 @@ export const MessageList = (props: Props) => {
       }}
       dataSource={props.messages}
       renderItem={(item: IMessage) => <Message login={login} message={item} />}
-      locale={{ emptyText: <>There's nothing here yet</> }}
+      locale={{
+        emptyText: (
+          <Typography.Text
+            style={{
+              background: "rgba(0, 0, 0, 0.15)",
+              color: "white",
+              padding: 10,
+              borderRadius: 5,
+            }}
+          >
+            There's nothing here yet
+          </Typography.Text>
+        ),
+      }}
       //   style={{""}}
       //   onScroll={onScroll}
       //   header={<div>Header</div>}

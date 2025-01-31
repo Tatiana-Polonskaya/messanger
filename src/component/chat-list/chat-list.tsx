@@ -94,16 +94,17 @@ export const ChatList = ({ currentChat, handleChatChange }: Props) => {
       <Menu
         onClick={onClick}
         selectedKeys={activeItem}
-        //   style={{ width: 256 }}
-        //   defaultSelectedKeys={["1"]}
-        //   defaultOpenKeys={["sub1"]}
         style={{ textAlign: "start" }}
         mode="vertical"
         items={menuItems}
-        
       />
-      <Divider style={{margin:10}}/>
-      <Button icon={<PlusOutlined />} onClick={handleAddClick} type="text" block>
+      <Divider style={{ margin: 10 }} />
+      <Button
+        icon={<PlusOutlined />}
+        onClick={handleAddClick}
+        type="text"
+        block
+      >
         Create a chat
       </Button>
       <AddChatModal

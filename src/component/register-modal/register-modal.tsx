@@ -43,10 +43,10 @@ export const RegisterModal = ({ isModalOpen, setIsModalOpen }: Props) => {
           </Typography.Title>
         }
         open={isModalOpen}
-        closable={false}
         footer={null}
-        centered
         width={"350px"}
+        centered
+        mask
       >
         <Space direction="vertical" style={{ width: "100%", gap: 10 }}>
           {user.login !== "" && <>Hello {user.login}!</>}
