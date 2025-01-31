@@ -10,12 +10,12 @@ export const ChatInput = (props: Props) => {
   const [value, setValue] = useState("");
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setValue(e.currentTarget.value.trim());
+    setValue(e.currentTarget.value);
   };
 
   const handleButtonClick = () => {
     if (value !== "") {
-      props.onTextSend(value);
+      props.onTextSend(value.trim());
       setValue("");
     }
   };
@@ -36,7 +36,11 @@ export const ChatInput = (props: Props) => {
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
       />
-      <Button type="primary" onClick={handleButtonClick}>
+      <Button
+        type="primary"
+        onClick={handleButtonClick}
+        style={{ background: "rgb(129, 166, 209)" }}
+      >
         <SendOutlined />
       </Button>
     </Space.Compact>

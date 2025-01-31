@@ -1,95 +1,39 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { Menu, MenuProps } from "antd";
+import { PlusOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Divider, Menu, MenuProps } from "antd";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { useLazyGetAllChatsQuery } from "../../store/services/chat";
+import { useAppSelector } from "../../store/hooks";
+import {
+  useCreateChatMutation,
+  useLazyGetAllChatsQuery,
+} from "../../store/services/chat";
 import { IChat } from "../../model/chat";
+import { AddChatModal } from "../add-chat-modal/add-chat-model";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-const items: MenuItem[] = [
-  {
-    key: "sub1",
-    label: "Navigation One",
-    // extra: <Tag color="red">1</Tag>,
-    // children: [
-    //   {
-    //     key: "g1",
-    //     label: "Item 1",
-    //     type: "group",
-    //     children: [
-    //       { key: "1", label: "Option 1" },
-    //       { key: "2", label: "Option 2" },
-    //     ],
-    //   },
-    //   {
-    //     key: "g2",
-    //     label: "Item 2",
-    //     type: "group",
-    //     children: [
-    //       { key: "3", label: "Option 3" },
-    //       { key: "4", label: "Option 4" },
-    //     ],
-    //   },
-    // ],
-  },
-  {
-    key: "sub2",
-    label: "Navigation Two",
-    // children: [
-    //   { key: "5", label: "Option 5" },
-    //   { key: "6", label: "Option 6" },
-    //   {
-    //     key: "sub3",
-    //     label: "Submenu",
-    //     children: [
-    //       { key: "7", label: "Option 7" },
-    //       { key: "8", label: "Option 8" },
-    //     ],
-    //   },
-    // ],
-  },
-  {
-    type: "divider",
-  },
-  {
-    key: "add",
-    label: "Add",
-    icon: <PlusOutlined />,
-    // type: "group",
-    // children: [
-    //   { key: "13", label: "Option 13" },
-    //   { key: "14", label: "Option 14" },
-    // ],
-  },
-];
-
-const defaultMenuItems: MenuItem[] = [
-  {
-    type: "divider",
-  },
-  {
-    key: "add",
-    label: "Add",
-    icon: <PlusOutlined />,
-    // type: "group",
-    // children: [
-    //   { key: "13", label: "Option 13" },
-    //   { key: "14", label: "Option 14" },
-    // ],
-  },
-];
-
-const convertChatListToMenuItem = (list: IChat[]): MenuItem[] => {
-  const newMenuItems = list.map(
-    (chat) =>
-      ({
-        key: chat.id,
-        label: chat.user_logins.join(" & "),
-      } as MenuItem)
-  );
-  newMenuItems.push(...defaultMenuItems);
-  return newMenuItems;
+const convertChatListToMenuItem = (
+  selfLogin: string,
+  list: IChat[] | IChat
+): MenuItem[] => {
+  if (Array.isArray(list)) {
+    const newMenuItems = list.map(
+      (chat) =>
+        ({
+          key: chat.id,
+          icon: <UserOutlined />,
+          label: chat.user_logins.filter((el) => el !== selfLogin).join(" & "),
+        } as MenuItem)
+    );
+    return newMenuItems;
+  } else {
+    return [
+      {
+        key: list.id,
+        icon: <UserOutlined />,
+        label: list.user_logins.filter((el) => el !== selfLogin).join(" & "),
+      } as MenuItem,
+    ];
+  }
 };
 
 type Props = {
@@ -99,9 +43,12 @@ type Props = {
 
 export const ChatList = ({ currentChat, handleChatChange }: Props) => {
   const login = useAppSelector((state) => state.user.login);
-  //   const dispatch = useAppDispatch();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [createChatRequest, createChatResponse] = useCreateChatMutation();
+
   const [getChatList, chatList] = useLazyGetAllChatsQuery();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [activeItem, setActimeItem] = useState<string[]>([]);
 
   useEffect(() => {
     if (login !== "") {
@@ -111,29 +58,59 @@ export const ChatList = ({ currentChat, handleChatChange }: Props) => {
 
   useEffect(() => {
     if (chatList.data !== undefined && chatList.data.data !== undefined)
-      setMenuItems(convertChatListToMenuItem(chatList.data.data));
+      setMenuItems(convertChatListToMenuItem(login, chatList.data.data));
   }, [chatList]);
 
   const onClick: MenuProps["onClick"] = (e) => {
-    if (e.key === "add") {
-      //   getChatList(login);
+    if (activeItem.includes(e.key)) {
+      setActimeItem([]);
     } else {
-      handleChatChange(e.key);
+      setActimeItem([e.key]);
     }
+    handleChatChange(e.key);
+  };
+
+  const handleAddClick = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const handleAddLogin = (friendLogin: string) => {
+    createChatRequest([login, friendLogin]);
   };
 
   useEffect(() => {
-    console.log(currentChat);
-  }, [currentChat]);
+    if (createChatResponse.isSuccess) {
+      console.log(createChatResponse.data.data);
+
+      setMenuItems((prev) => [
+        ...prev,
+        ...convertChatListToMenuItem(login, createChatResponse.data.data),
+      ]);
+    }
+  }, [createChatResponse]);
 
   return (
-    <Menu
-      onClick={onClick}
-      //   style={{ width: 256 }}
-      //   defaultSelectedKeys={["1"]}
-      //   defaultOpenKeys={["sub1"]}
-      mode="vertical"
-      items={menuItems}
-    />
+    <>
+      <Menu
+        onClick={onClick}
+        selectedKeys={activeItem}
+        //   style={{ width: 256 }}
+        //   defaultSelectedKeys={["1"]}
+        //   defaultOpenKeys={["sub1"]}
+        style={{ textAlign: "start" }}
+        mode="vertical"
+        items={menuItems}
+        
+      />
+      <Divider style={{margin:10}}/>
+      <Button icon={<PlusOutlined />} onClick={handleAddClick} type="text" block>
+        Create a chat
+      </Button>
+      <AddChatModal
+        isModalOpen={isAddModalOpen}
+        setIsModalOpen={setIsAddModalOpen}
+        onSaveClick={handleAddLogin}
+      />
+    </>
   );
 };

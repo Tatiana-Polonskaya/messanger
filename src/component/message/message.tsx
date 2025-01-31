@@ -2,20 +2,43 @@ import { Card, List } from "antd";
 import { IMessage } from "../../types/message";
 
 type Props = {
+  login: string;
   message: IMessage;
 };
 
-export const Message = ({ message }: Props) => {
+const covertTimestampToDatetime = (timestamp: number) => {
+  const date = new Date(timestamp);
+
+  const month = "0" + (date.getMonth() + 1);
+  const day = "0" + date.getDate();
+  const hours = date.getHours();
+
+  const minutes = "0" + date.getMinutes();
+
+  const formattedTime =
+    hours +
+    ":" +
+    minutes.substr(-2) +
+    " " +
+    day.substr(-2) +
+    "." +
+    month.substr(-2);
+
+  return formattedTime;
+};
+
+export const Message = ({ message, login }: Props) => {
   return (
     <List.Item
       style={{
         display: "flex",
-        justifyContent: message.senderId === 0 ? "end" : "start",
+        justifyContent: message.sender === login ? "end" : "start",
       }}
+      
     >
       <Card size="small" style={{ maxWidth: 300, minWidth: 50 }}>
         <p>{message.text}</p>
-        <p>{message.date}</p>
+        <p>{covertTimestampToDatetime(message.time)}</p>
       </Card>
     </List.Item>
   );

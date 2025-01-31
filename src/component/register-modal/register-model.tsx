@@ -1,4 +1,4 @@
-import { Input, Modal, Space, Typography } from "antd";
+import { Button, Input, Modal, Space, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../../store/hooks";
 import { useLoginMutation } from "../../store/services/user";
@@ -12,17 +12,19 @@ export const RegisterModal = ({ isModalOpen, setIsModalOpen }: Props) => {
   const user = useAppSelector((state) => state.user);
   const [sendUserRequest, sendUserResponse] = useLoginMutation();
 
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
+  const [login, setLogin] = useState("login");
+  const [password, setPassword] = useState("login");
 
   const handleOk = async () => {
     if (login !== "" && password !== "") {
-        console.log(login, password);
-        
+      console.log(login, password);
+
       await sendUserRequest({
         login: login,
         password: password,
       });
+
+      localStorage.setItem("login", login);
     }
   };
 
@@ -32,23 +34,25 @@ export const RegisterModal = ({ isModalOpen, setIsModalOpen }: Props) => {
     }
   }, [sendUserResponse]);
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
   return (
     <>
       <Modal
-        title="Write your name!"
+        title={
+          <Typography.Title style={{ textAlign: "center" }} level={4}>
+            Write your name!
+          </Typography.Title>
+        }
         open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
         closable={false}
+        footer={null}
         centered
+        width={"350px"}
       >
-        <Space.Compact direction="vertical">
+        <Space direction="vertical" style={{ width: "100%", gap: 10 }}>
           {user.login !== "" && <>Hello {user.login}!</>}
-          <Typography.Text>Your login:</Typography.Text>
+          <Typography.Text style={{ textAlign: "left" }}>
+            Your login:
+          </Typography.Text>
           <Input
             placeholder="unique login"
             value={login}
@@ -61,7 +65,14 @@ export const RegisterModal = ({ isModalOpen, setIsModalOpen }: Props) => {
             value={password}
             onChange={(e) => setPassword(e.currentTarget.value.trim())}
           />
-        </Space.Compact>
+          <Button
+            type="primary"
+            onClick={handleOk}
+            style={{ width: "100%", marginTop: 10 }}
+          >
+            Sign in / Sign up
+          </Button>
+        </Space>
       </Modal>
     </>
   );

@@ -22,7 +22,7 @@ export const chatApi = createApi({
         url: "create_chat",
         method: "POST",
         // params: { email: loginRequest.email },
-        body: userLogins,
+        body: { user_logins: userLogins },
       }),
     }),
   }),

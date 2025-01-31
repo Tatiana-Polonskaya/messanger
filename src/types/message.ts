@@ -3,6 +3,7 @@ export interface IMessage {
   text: string;
   sender: string;
   time: number;
+  chat_id: string;
 }
 
 export type IMessages = IMessage[];
