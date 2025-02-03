@@ -79,7 +79,7 @@ export const Chat = ({ socket, currentChat }: Props) => {
     });
 
     return () => socket.off("receive_message");
-  }, [socket]);
+  }, [socket, currentChat]);
 
   const handleMessageSend = (text: string) => {
     const newMessage = {

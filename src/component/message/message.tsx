@@ -33,14 +33,15 @@ export const Message = ({ message, login }: Props) => {
       style={{
         display: "flex",
         justifyContent: message.sender === login ? "end" : "start",
+        padding: "10px",
       }}
     >
       <Card size="small" style={{ maxWidth: 300, minWidth: 50 }}>
-        <Flex>
-          <Typography>{message.text}</Typography>
-          <Typography>
+        <Flex vertical>
+          <Typography.Text>{message.text}</Typography.Text>
+          <Typography.Text style={{ fontSize: 12, opacity: 0.5, alignSelf: "flex-end" }}>
             {covertTimestampToDatetime(message.time)}
-          </Typography>
+          </Typography.Text>
         </Flex>
       </Card>
     </List.Item>

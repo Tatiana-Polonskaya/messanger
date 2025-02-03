@@ -44,9 +44,12 @@ export const MainPage = () => {
     }
   }, [login]);
 
-  const handleChatChange = (id: string) => {
-    if (id === currentChat) setCurrentChat("");
-    else setCurrentChat(id);
+  const handleChatChange = (id: string, text: string) => {
+    // if (id === currentChat) setCurrentChat("");
+    // else setCurrentChat(id);
+    console.log("chat", id);
+
+    setCurrentChat(id);
   };
 
   return (
@@ -59,7 +62,7 @@ export const MainPage = () => {
       <Sider width="25%" style={siderStyle}>
         <AccountInfo />
         <ChatList
-          currentChat={currentChat}
+          currentIdChat={currentChat}
           handleChatChange={handleChatChange}
         />
       </Sider>

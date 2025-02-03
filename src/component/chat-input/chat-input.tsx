@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button, Input, Space } from "antd";
 import { SendOutlined } from "@ant-design/icons";
+import TextArea from "antd/es/input/TextArea";
 
 type Props = {
   onTextSend: (text: string) => void;
@@ -9,8 +10,10 @@ type Props = {
 export const ChatInput = (props: Props) => {
   const [value, setValue] = useState("");
 
-  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setValue(e.currentTarget.value);
+  const handleInputChange: React.ChangeEventHandler<HTMLTextAreaElement> = (
+    e
+  ) => {
+    setValue(e.target.value);
   };
 
   const handleButtonClick = () => {
@@ -20,7 +23,7 @@ export const ChatInput = (props: Props) => {
     }
   };
 
-  const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (
+  const handleKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (
     event
   ) => {
     if (event.key === "Enter") {
@@ -30,17 +33,22 @@ export const ChatInput = (props: Props) => {
 
   return (
     <Space.Compact style={{ width: "100%" }}>
-      <Input
+      <TextArea
+        rows={1}
+        placeholder="Type your text"
+        // maxLength={120}
+        value={value}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        autoSize={{minRows:1, maxRows:10}}
+      />
+      {/* <Input
         placeholder="Type your text"
         value={value}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
-      />
-      <Button
-        type="primary"
-        onClick={handleButtonClick}
-        
-      >
+      /> */}
+      <Button type="primary" onClick={handleButtonClick}>
         <SendOutlined />
       </Button>
     </Space.Compact>

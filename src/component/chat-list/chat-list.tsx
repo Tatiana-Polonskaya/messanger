@@ -37,11 +37,11 @@ const convertChatListToMenuItem = (
 };
 
 type Props = {
-  currentChat: string;
-  handleChatChange: (id: string) => void;
+  currentIdChat: string;
+  handleChatChange: (id: string, text: string) => void;
 };
 
-export const ChatList = ({ currentChat, handleChatChange }: Props) => {
+export const ChatList = ({ currentIdChat, handleChatChange }: Props) => {
   const login = useAppSelector((state) => state.user.login);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [createChatRequest, createChatResponse] = useCreateChatMutation();
@@ -62,12 +62,10 @@ export const ChatList = ({ currentChat, handleChatChange }: Props) => {
   }, [chatList]);
 
   const onClick: MenuProps["onClick"] = (e) => {
-    if (activeItem.includes(e.key)) {
-      setActimeItem([]);
-    } else {
-      setActimeItem([e.key]);
-    }
-    handleChatChange(e.key);
+    setActimeItem([e.key]);
+    console.log(e.item, menuItems);
+    
+    handleChatChange(e.key, "");
   };
 
   const handleAddClick = () => {
