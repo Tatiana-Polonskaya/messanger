@@ -1,4 +1,4 @@
-import { IdcardOutlined } from "@ant-design/icons";
+import { IdcardOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useAppSelector } from "../../store/hooks";
 import { Flex, Typography } from "antd";
 
@@ -22,6 +22,7 @@ export const AccountInfo = () => {
         <Typography.Title level={4} style={{ margin: 0, color: "white" }}>
           {login}
         </Typography.Title>
+        <LogoutOutlined />
       </Flex>
     </>
   );

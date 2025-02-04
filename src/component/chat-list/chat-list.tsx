@@ -63,9 +63,10 @@ export const ChatList = ({ currentIdChat, handleChatChange }: Props) => {
 
   const onClick: MenuProps["onClick"] = (e) => {
     setActimeItem([e.key]);
-    console.log(e.item, menuItems);
-    
-    handleChatChange(e.key, "");
+
+    const menuItem = menuItems!.find((item) => item!.key === e.key);
+    if (menuItem)
+      handleChatChange(e.key, menuItem?.label || "");
   };
 
   const handleAddClick = () => {

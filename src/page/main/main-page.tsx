@@ -29,7 +29,9 @@ const socket = io.connect("http://localhost:4000");
 
 export const MainPage = () => {
   const dispatch = useAppDispatch();
-  const [currentChat, setCurrentChat] = useState<string>("");
+  const [currentChat, setCurrentChat] = useState<{ id: string; label: string }>(
+    { id: "", label: "" }
+  );
 
   const login = useAppSelector((state) => state.user.login);
 
@@ -44,12 +46,11 @@ export const MainPage = () => {
     }
   }, [login]);
 
-  const handleChatChange = (id: string, text: string) => {
-    // if (id === currentChat) setCurrentChat("");
-    // else setCurrentChat(id);
-    console.log("chat", id);
-
-    setCurrentChat(id);
+  const handleChatChange = (id: string, label: string) => {
+    if (id === currentChat.id) setCurrentChat({ id: "", label: "" });
+    else {
+      setCurrentChat({ id, label });
+    }
   };
 
   return (
@@ -62,7 +63,7 @@ export const MainPage = () => {
       <Sider width="25%" style={siderStyle}>
         <AccountInfo />
         <ChatList
-          currentIdChat={currentChat}
+          currentIdChat={currentChat.id}
           handleChatChange={handleChatChange}
         />
       </Sider>

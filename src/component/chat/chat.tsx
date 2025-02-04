@@ -7,15 +7,19 @@ import { useAppSelector } from "../../store/hooks";
 import { useEffect, useState } from "react";
 import { IMessage, IMessages } from "../../types/message";
 import { useLazyGetAllMessageQuery } from "../../store/services/message";
+import { DeleteOutlined, UserDeleteOutlined, UserOutlined } from "@ant-design/icons";
 
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   socket: any;
-  currentChat: string;
+  currentChat: { id: string; label: string };
 };
 
 const headerStyle: React.CSSProperties = {
   textAlign: "center",
+  display: "flex",
+  flexFlow: "row nowrap",
+  justifyContent: "space-around",
   color: "#fff",
   height: 64,
   paddingInline: 48,
@@ -59,13 +63,13 @@ export const Chat = ({ socket, currentChat }: Props) => {
   const [getMessages, newMessages] = useLazyGetAllMessageQuery();
 
   useEffect(() => {
-    if (currentChat !== "") {
-      getMessages(currentChat);
+    if (currentChat.id !== "") {
+      getMessages(currentChat.id);
       socket.emit("join_room", { chat_id: currentChat });
-    } else if (currentChat === "" && messages.length !== 0) {
+    } else if (currentChat.id === "" && messages.length !== 0) {
       setMessage([]);
     }
-  }, [currentChat]);
+  }, [currentChat.id]);
 
   useEffect(() => {
     if (newMessages.data && newMessages.data.data) {
@@ -75,11 +79,12 @@ export const Chat = ({ socket, currentChat }: Props) => {
 
   useEffect(() => {
     socket.on("receive_message", (data: IMessage) => {
-      if (data.chat_id === currentChat) setMessage((prev) => [...prev, data]);
+      if (data.chat_id === currentChat.id)
+        setMessage((prev) => [...prev, data]);
     });
 
     return () => socket.off("receive_message");
-  }, [socket, currentChat]);
+  }, [socket, currentChat.id]);
 
   const handleMessageSend = (text: string) => {
     const newMessage = {
@@ -87,13 +92,13 @@ export const Chat = ({ socket, currentChat }: Props) => {
       text,
       sender: login,
       time: Date.now(),
-      chat_id: currentChat,
+      chat_id: currentChat.id,
     };
 
     setMessage((prev) => [...prev, newMessage]);
     socket.emit("send_message", {
       id: newMessage.id,
-      chat_id: currentChat,
+      chat_id: currentChat.id,
       sender: login,
       text: text,
       time: newMessage.time,
@@ -107,10 +112,14 @@ export const Chat = ({ socket, currentChat }: Props) => {
         backgroundSize: "contain",
       }}
     >
-      {currentChat ? (
+      {currentChat.id ? (
         <>
-          {" "}
-          <Header style={headerStyle}>Header</Header>
+          <Header style={headerStyle}>
+            <UserOutlined />
+            <Typography.Text>{currentChat.label}</Typography.Text>
+            <DeleteOutlined />
+            <UserDeleteOutlined />
+          </Header>
           <Content style={contentStyle}>
             <MessageList messages={messages} />
           </Content>
