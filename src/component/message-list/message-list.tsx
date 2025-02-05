@@ -1,4 +1,4 @@
-import { Flex, List, Typography } from "antd";
+import { List, Typography } from "antd";
 import { IMessage, IMessages } from "../../types/message";
 import { Message } from "../message/message";
 import { useEffect, useRef } from "react";

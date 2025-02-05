@@ -32,15 +32,6 @@ export const ChatInput = (props: Props) => {
 
   return (
     <Space.Compact style={{ width: "100%" }}>
-      {/* <TextArea
-        rows={1}
-        placeholder="Type your text"
-        // maxLength={120}
-        value={value}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-        autoSize={{minRows:1, maxRows:10}}
-      /> */}
       <Input
         placeholder="Type your text"
         value={value}

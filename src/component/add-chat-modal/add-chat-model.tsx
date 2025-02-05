@@ -34,6 +34,14 @@ export const AddChatModal = ({
     }
   };
 
+  const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (
+    event
+  ) => {
+    if (event.key === "Enter") {
+      handleSaveFriendLogin();
+    }
+  };
+
   return (
     <Modal
       title={
@@ -67,6 +75,7 @@ export const AddChatModal = ({
           placeholder="Type a login"
           value={friendLogin}
           onChange={(e) => setFriendLogin(e.currentTarget.value.trim())}
+          onKeyDown={handleKeyDown}
         />
       </Space>
     </Modal>
